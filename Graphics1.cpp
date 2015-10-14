@@ -9,9 +9,11 @@ using namespace std;
 const int WINDOW_HEIGHT = 600;
 const int WINDOW_WIDTH = 900;
 const int BORDER_WIDTH = 20;
+const int FPS = 33; // On internet they argue that this is 30 FPS :D
 
 void render();
 void drawCircle(int, int, float);
+void timer(int);
 
 class Player {
 private:
@@ -38,6 +40,7 @@ Player::Player(int xPosition, int yPosition, int width, int height) {
 	this->yPosition = yPosition;
 	this->width = width;
 	this->height = height;
+	this->xSpeed = 7;
 
 	cout << "Player Created at ";
 	cout << "(x: " << this->xPosition << ", ";
@@ -102,6 +105,15 @@ void Player::draw() {
 
 void Player::update() {
 
+	this->xPosition += this->xSpeed;
+
+	if (this->xPosition >= WINDOW_WIDTH - BORDER_WIDTH - this->width || this->xPosition <= BORDER_WIDTH) {
+		this->xSpeed *= -1;
+	}
+
+	cout << xPosition << "\n";
+
+	glutPostRedisplay();
 }
 
 
@@ -151,6 +163,7 @@ void main(int argc, char** argr) {
 
 	glutCreateWindow("Graphics Assignment");
 	glutDisplayFunc(render);
+	glutTimerFunc(0, timer, 0);
 
 	glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
 	glClearColor(1.0f, 1.0f, 1.0f, 0.0f);
@@ -161,6 +174,13 @@ void main(int argc, char** argr) {
 }
 
 Player p1(BORDER_WIDTH, 0, 50, 50);
+
+
+void timer(int t) {
+	p1.update();
+
+	glutTimerFunc(FPS, timer, 0);
+}
 
 void render() {
 	glClearColor(1.0f, 1.0f, 1.0f, 0.0f);
