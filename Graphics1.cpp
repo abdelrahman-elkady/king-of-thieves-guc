@@ -50,6 +50,8 @@ public:
 
 	bool rightTouch() { return this->xPosition >= WINDOW_WIDTH - BORDER_WIDTH - this->width; }
 	bool leftTouch() { return this->xPosition <= BORDER_WIDTH; }
+
+	bool onFirstLevel();
 };
 
 
@@ -62,7 +64,6 @@ Player::Player(int xPosition, int yPosition, int width, int height) {
 	this->width = width;
 	this->height = height;
 	this->xSpeed = DEFAULT_X_SPEED;
-
 	this->yAcceleration = -3;
 
 	cout << "Player Created at ";
@@ -128,12 +129,19 @@ void Player::draw() {
 
 void Player::update() {
 
-	cout << "Speed : " << this->xSpeed << endl;
-
 	this->xPosition += this->xSpeed;
 
-	this->ySpeed += this->yAcceleration;
-	this->yPosition += this->ySpeed;
+	if (!this->onFirstLevel()) {
+		this->ySpeed += this->yAcceleration;
+		this->yPosition += this->ySpeed;
+	}
+	else { // if 3antar is on the first level
+		this->yPosition += this->ySpeed;
+		if (this->yPosition <= this->height + 195) {
+			this->yPosition = this->height + 195;
+		}
+		this->setRelativeXSpeed(DEFAULT_X_SPEED);
+	}
 
 	// Bouncing if touched borders
 	if (this->rightTouch() || this->leftTouch()) {
@@ -146,8 +154,20 @@ void Player::update() {
 		this->setRelativeXSpeed(DEFAULT_X_SPEED);
 	}
 
+	this->onFirstLevel();
+
 
 	glutPostRedisplay();
+}
+
+bool Player::onFirstLevel() {
+
+	if (this->xPosition >= BORDER_WIDTH + 100 + this->getWidth() - 10 && this->xPosition <= BORDER_WIDTH + 400 + this->getWidth() + 10) {
+		if (this->yPosition >= this->height + 195 && this->yPosition <= this->height + 205) {
+			return true;
+		}
+	}
+	return false;
 }
 
 void Player::setRelativeXSpeed(int x) {
@@ -158,6 +178,9 @@ void Player::setRelativeXSpeed(int x) {
 		this->xSpeed = -1 * x;
 	}
 }
+
+
+Player p1(BORDER_WIDTH, 0, 50, 50);
 
 
 /*
@@ -183,6 +206,25 @@ void drawBorders() {
 	glVertex3f(WINDOW_WIDTH, 0.0f, 0.0f);
 	glVertex3f(WINDOW_WIDTH, WINDOW_HEIGHT, 0.0f);
 	glVertex3f(WINDOW_WIDTH - BORDER_WIDTH, WINDOW_HEIGHT, 0.0f);
+	glEnd();
+
+	glPopMatrix();
+
+}
+
+
+void drawLevel() {
+	drawBorders();
+
+	glPushMatrix();
+	glColor3f(0.5882f, 0.0980f, 0.0549f);
+
+	// TODO: Make it relative to the jump height
+	glBegin(GL_QUADS);
+	glVertex3f(BORDER_WIDTH + 100 + p1.getWidth(), p1.getHeight() + 195, 0.0f);
+	glVertex3f(BORDER_WIDTH + 400 + p1.getWidth(), p1.getHeight() + 195, 0.0f);
+	glVertex3f(BORDER_WIDTH + 400 + p1.getWidth(), p1.getHeight() + 180, 0.0f);
+	glVertex3f(BORDER_WIDTH + 100 + p1.getWidth(), p1.getHeight() + 180, 0.0f);
 	glEnd();
 
 	glPopMatrix();
@@ -216,9 +258,6 @@ void main(int argc, char** argr) {
 
 }
 
-Player p1(BORDER_WIDTH, 0, 50, 50);
-
-
 void timer(int t) {
 	p1.update();
 
@@ -230,15 +269,13 @@ void keyboardHandler(unsigned char key, int x, int y) {
 	{
 	case SPACEBAR:
 		// Jump
-		if (p1.getYPosition() <= 0) {
+		if (p1.getYPosition() <= 0 || p1.onFirstLevel()) {
 			p1.setYSpeed(JUMP_HEIGHT);
 		}
 
 		// Double jump
-		if ((p1.getXPosition() >= WINDOW_WIDTH - BORDER_WIDTH - p1.getWidth() - 10
-			&& p1.getYPosition() > 0)
-			|| (p1.getXPosition() <= BORDER_WIDTH + 10
-				&& p1.getYPosition() > 0)) {
+		if ((p1.getXPosition() >= WINDOW_WIDTH - BORDER_WIDTH - p1.getWidth() - 15)
+			|| (p1.getXPosition() <= BORDER_WIDTH + 15)) {
 			p1.setYSpeed(JUMP_HEIGHT);
 		}
 
@@ -256,8 +293,8 @@ void render() {
 	glClearColor(1.0f, 1.0f, 1.0f, 0.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 
+	drawLevel();
 	p1.draw();
-	drawBorders();
 
 	glFlush();
 }
