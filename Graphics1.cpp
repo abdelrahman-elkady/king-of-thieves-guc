@@ -6,6 +6,8 @@
 #include <glut.h>
 using namespace std;
 
+#define SPACEBAR 32
+
 const int WINDOW_HEIGHT = 600;
 const int WINDOW_WIDTH = 900;
 const int BORDER_WIDTH = 20;
@@ -14,6 +16,7 @@ const int FPS = 33; // On internet they argue that this is 30 FPS :D
 void render();
 void drawCircle(int, int, float);
 void timer(int);
+void keyboardHandler(unsigned char, int, int);
 
 class Player {
 private:
@@ -28,6 +31,15 @@ public:
 	Player(int, int, int, int);
 	void update();
 	void draw();
+	void setXPosition(int x) { this->xPosition = x; }
+	void setYPosition(int y) { this->yPosition = y; }
+	void setXSpeed(int x) { this->xSpeed = x; }
+	void setYSpeed(int y) { this->ySpeed = y; }
+	float getXSpeed() { return this->xSpeed; }
+	float getYSpeed() { return this->ySpeed; }
+
+	float getXPosition() { return this->xPosition; }
+	float getYPosition() { return this->yPosition; }
 
 };
 
@@ -41,6 +53,8 @@ Player::Player(int xPosition, int yPosition, int width, int height) {
 	this->width = width;
 	this->height = height;
 	this->xSpeed = 7;
+
+	this->yAcceleration = -3;
 
 	cout << "Player Created at ";
 	cout << "(x: " << this->xPosition << ", ";
@@ -105,13 +119,19 @@ void Player::draw() {
 
 void Player::update() {
 
+
 	this->xPosition += this->xSpeed;
+
+	this->ySpeed += this->yAcceleration;
+	this->yPosition += this->ySpeed;
 
 	if (this->xPosition >= WINDOW_WIDTH - BORDER_WIDTH - this->width || this->xPosition <= BORDER_WIDTH) {
 		this->xSpeed *= -1;
 	}
 
-	cout << xPosition << "\n";
+	if (this->yPosition <= 0) {
+		this->yPosition = 0;
+	}
 
 	glutPostRedisplay();
 }
@@ -164,7 +184,7 @@ void main(int argc, char** argr) {
 	glutCreateWindow("Graphics Assignment");
 	glutDisplayFunc(render);
 	glutTimerFunc(0, timer, 0);
-
+	glutKeyboardFunc(keyboardHandler);
 	glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
 	glClearColor(1.0f, 1.0f, 1.0f, 0.0f);
 	gluOrtho2D(0.0, WINDOW_WIDTH, 0.0, WINDOW_HEIGHT);
@@ -180,6 +200,19 @@ void timer(int t) {
 	p1.update();
 
 	glutTimerFunc(FPS, timer, 0);
+}
+
+void keyboardHandler(unsigned char key, int x, int y) {
+	switch (key)
+	{
+	case SPACEBAR:
+		if (p1.getYPosition() <= 0) {
+			p1.setYSpeed(20);
+		}
+
+	default:
+		break;
+	}
 }
 
 void render() {
