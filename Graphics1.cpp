@@ -12,6 +12,8 @@ const int WINDOW_HEIGHT = 600;
 const int WINDOW_WIDTH = 900;
 const int BORDER_WIDTH = 20;
 const int FPS = 33; // On internet they argue that this is 30 FPS :D
+const int JUMP_HEIGHT = 30;
+const int DEFAULT_X_SPEED = 7;
 
 void render();
 void drawCircle(int, int, float);
@@ -34,6 +36,8 @@ public:
 	void setXPosition(int x) { this->xPosition = x; }
 	void setYPosition(int y) { this->yPosition = y; }
 	void setXSpeed(int x) { this->xSpeed = x; }
+	void setRelativeXSpeed(int x);
+	void setRelativeYSpeed(int y);
 	void setYSpeed(int y) { this->ySpeed = y; }
 	float getXSpeed() { return this->xSpeed; }
 	float getYSpeed() { return this->ySpeed; }
@@ -57,7 +61,7 @@ Player::Player(int xPosition, int yPosition, int width, int height) {
 	this->yPosition = yPosition;
 	this->width = width;
 	this->height = height;
-	this->xSpeed = 7;
+	this->xSpeed = DEFAULT_X_SPEED;
 
 	this->yAcceleration = -3;
 
@@ -124,6 +128,7 @@ void Player::draw() {
 
 void Player::update() {
 
+	cout << "Speed : " << this->xSpeed << endl;
 
 	this->xPosition += this->xSpeed;
 
@@ -138,10 +143,20 @@ void Player::update() {
 	// if 3antar hits the ground
 	if (this->yPosition <= 0) {
 		this->yPosition = 0;
+		this->setRelativeXSpeed(DEFAULT_X_SPEED);
 	}
 
 
 	glutPostRedisplay();
+}
+
+void Player::setRelativeXSpeed(int x) {
+	if (this->xSpeed > 0) {
+		this->xSpeed = x;
+	}
+	else {
+		this->xSpeed = -1 * x;
+	}
 }
 
 
@@ -214,17 +229,23 @@ void keyboardHandler(unsigned char key, int x, int y) {
 	switch (key)
 	{
 	case SPACEBAR:
+		// Jump
 		if (p1.getYPosition() <= 0) {
-			p1.setYSpeed(20);
+			p1.setYSpeed(JUMP_HEIGHT);
 		}
 
 		// Double jump
-		if ((p1.getXPosition() >= WINDOW_WIDTH - BORDER_WIDTH - p1.getWidth() - 15
+		if ((p1.getXPosition() >= WINDOW_WIDTH - BORDER_WIDTH - p1.getWidth() - 10
 			&& p1.getYPosition() > 0)
-			|| (p1.getXPosition() <= BORDER_WIDTH + 15
+			|| (p1.getXPosition() <= BORDER_WIDTH + 10
 				&& p1.getYPosition() > 0)) {
-			p1.setYSpeed(20);
+			p1.setYSpeed(JUMP_HEIGHT);
 		}
+
+		// Speed 3antar in x while jumping
+		p1.setRelativeXSpeed(13);
+
+		break;
 
 	default:
 		break;
