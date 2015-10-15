@@ -41,6 +41,11 @@ public:
 	float getXPosition() { return this->xPosition; }
 	float getYPosition() { return this->yPosition; }
 
+	int getWidth() { return this->width; }
+	int getHeight() { return this->height; }
+
+	bool rightTouch() { return this->xPosition >= WINDOW_WIDTH - BORDER_WIDTH - this->width; }
+	bool leftTouch() { return this->xPosition <= BORDER_WIDTH; }
 };
 
 
@@ -125,13 +130,16 @@ void Player::update() {
 	this->ySpeed += this->yAcceleration;
 	this->yPosition += this->ySpeed;
 
-	if (this->xPosition >= WINDOW_WIDTH - BORDER_WIDTH - this->width || this->xPosition <= BORDER_WIDTH) {
+	// Bouncing if touched borders
+	if (this->rightTouch() || this->leftTouch()) {
 		this->xSpeed *= -1;
 	}
 
+	// if 3antar hits the ground
 	if (this->yPosition <= 0) {
 		this->yPosition = 0;
 	}
+
 
 	glutPostRedisplay();
 }
@@ -207,6 +215,14 @@ void keyboardHandler(unsigned char key, int x, int y) {
 	{
 	case SPACEBAR:
 		if (p1.getYPosition() <= 0) {
+			p1.setYSpeed(20);
+		}
+
+		// Double jump
+		if ((p1.getXPosition() >= WINDOW_WIDTH - BORDER_WIDTH - p1.getWidth() - 15
+			&& p1.getYPosition() > 0)
+			|| (p1.getXPosition() <= BORDER_WIDTH + 15
+				&& p1.getYPosition() > 0)) {
 			p1.setYSpeed(20);
 		}
 
