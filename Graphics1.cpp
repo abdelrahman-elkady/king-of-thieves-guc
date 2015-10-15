@@ -154,9 +154,6 @@ void Player::update() {
 		this->setRelativeXSpeed(DEFAULT_X_SPEED);
 	}
 
-	this->onFirstLevel();
-
-
 	glutPostRedisplay();
 }
 
