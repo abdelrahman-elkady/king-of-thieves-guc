@@ -175,10 +175,13 @@ void Player::update() {
 	}
 	else { // if 3antar is on the first level
 		this->yPosition += this->ySpeed;
+
+
 		if (this->yPosition <= LEVEL_ONE_THIKNESS) {
 			this->yPosition = LEVEL_ONE_THIKNESS;
+			this->setRelativeXSpeed(DEFAULT_X_SPEED);
 		}
-		this->setRelativeXSpeed(DEFAULT_X_SPEED);
+
 	}
 
 	// Bouncing if touched borders
