@@ -18,6 +18,8 @@ const int FPS = 33; // On internet they argue that this is 30 FPS :D
 const int JUMP_HEIGHT = 30;
 const int DEFAULT_X_SPEED = 7;
 
+
+
 void render();
 void drawCircle(int, int, float);
 void timer(int);
@@ -95,6 +97,13 @@ const int LEVEL_ONE_THIKNESS = LEVEL_ONE_HEIGHT + 15;
 const int DOOR_START = BORDER_WIDTH;
 const int DOOR_END = DOOR_START + 20;
 const int DOOR_HEIGHT = LEVEL_ONE_THIKNESS + 180;
+
+const int OBSTACLE_WIDTH = 20;
+const int OBSTACLE_HEIGHT = 40;
+const int OBSTACLE_1_X_START = 500;
+const int OBSTACLE_1_Y_START = 0;
+const int OBSTACLE_2_X_START = 400;
+const int OBSTACLE_2_Y_START = LEVEL_ONE_THIKNESS;
 
 void Player::draw() {
 	glPushMatrix();
@@ -249,10 +258,28 @@ void drawDoor() {
 	glEnd();
 }
 
+void drawObstacles() {
+	glColor3f(1.0f, 0.0f, 0.0f);
+	glBegin(GL_QUADS);
+	glVertex3f(OBSTACLE_1_X_START, OBSTACLE_1_Y_START, 0.0f);
+	glVertex3f(OBSTACLE_1_X_START + OBSTACLE_WIDTH, OBSTACLE_1_Y_START, 0.0f);
+	glVertex3f(OBSTACLE_1_X_START + OBSTACLE_WIDTH, OBSTACLE_1_Y_START + OBSTACLE_HEIGHT, 0.0f);
+	glVertex3f(OBSTACLE_1_X_START, OBSTACLE_1_Y_START + OBSTACLE_HEIGHT, 0.0f);
+	glEnd();
+
+	glBegin(GL_QUADS);
+	glVertex3f(OBSTACLE_2_X_START, OBSTACLE_2_Y_START, 0.0f);
+	glVertex3f(OBSTACLE_2_X_START + OBSTACLE_WIDTH, OBSTACLE_2_Y_START, 0.0f);
+	glVertex3f(OBSTACLE_2_X_START + OBSTACLE_WIDTH, OBSTACLE_2_Y_START + OBSTACLE_HEIGHT, 0.0f);
+	glVertex3f(OBSTACLE_2_X_START, OBSTACLE_2_Y_START + OBSTACLE_HEIGHT, 0.0f);
+	glEnd();
+}
+
 
 void drawLevel() {
 	drawBorders();
 	drawDoor();
+	drawObstacles();
 
 	glPushMatrix();
 	glColor3f(0.5882f, 0.0980f, 0.0549f);
