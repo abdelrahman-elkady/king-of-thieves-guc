@@ -24,7 +24,7 @@ void timer(int);
 void keyboardHandler(unsigned char, int, int);
 void drawBitmapText(char, float, float, float);
 
-float time = 0;
+float timeElapsed = 0;
 bool gameOver = false;
 
 class Player {
@@ -294,7 +294,7 @@ void drawBitmapText(string text, float x, float y, float z)
 }
 
 void drawTimer() {
-	string timeString = "Time : " + to_string(int(time)) + " s";
+	string timeString = "Time : " + to_string(int(timeElapsed)) + " s";
 	drawBitmapText(timeString, 760, 550, 0);
 }
 
@@ -303,7 +303,7 @@ void reset() {
 	p1.setYPosition(0);
 	p1.setHeight(50);
 	p1.setWidth(50);
-	time = 0;
+	timeElapsed = 0;
 }
 
 
@@ -328,7 +328,7 @@ void main(int argc, char** argr) {
 void timer(int t) {
 	p1.update();
 	if (!gameOver) {
-		time += FPS / 1000.0;
+		timeElapsed += FPS / 1000.0;
 	}
 	glutTimerFunc(FPS, timer, 0);
 }
@@ -377,7 +377,7 @@ void render() {
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
 		drawBitmapText("You are out!", 400, 300, 0);
-		drawBitmapText("You managed to escape in " + to_string(int(time)) + " seconds !", 305, 270, 0);
+		drawBitmapText("You managed to escape in " + to_string(int(timeElapsed)) + " seconds !", 305, 270, 0);
 		drawBitmapText("Press R to restart", 385, 230, 0);
 	}
 
