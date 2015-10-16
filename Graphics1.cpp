@@ -42,7 +42,7 @@ public:
 	void setYPosition(int y) { this->yPosition = y; }
 	void setXSpeed(int x) { this->xSpeed = x; }
 	void setRelativeXSpeed(int x);
-	void setRelativeYSpeed(int y);
+
 	void setYSpeed(int y) { this->ySpeed = y; }
 	float getXSpeed() { return this->xSpeed; }
 	float getYSpeed() { return this->ySpeed; }
@@ -86,6 +86,10 @@ const int LEVEL_ONE_START = BORDER_WIDTH + 100 + p1.getWidth();
 const int LEVEL_ONE_END = WINDOW_WIDTH - BORDER_WIDTH;
 const int LEVEL_ONE_HEIGHT = p1.getHeight() + 185;
 const int LEVEL_ONE_THIKNESS = LEVEL_ONE_HEIGHT + 15;
+
+const int DOOR_START = BORDER_WIDTH + 20;
+const int DOOR_END = DOOR_START + 20;
+const int DOOR_HEIGHT = LEVEL_ONE_THIKNESS + 180;
 
 void Player::draw() {
 	glPushMatrix();
@@ -228,9 +232,20 @@ void drawBorders() {
 
 }
 
+void drawDoor() {
+	glColor3f(0.0039215f, 0.7647058f, 0.560784f);
+	glBegin(GL_QUADS);
+	glVertex3f(DOOR_START, DOOR_HEIGHT, 0.0f);
+	glVertex3f(DOOR_END, DOOR_HEIGHT, 0.0f);
+	glVertex3f(DOOR_END, DOOR_HEIGHT + 50, 0.0f);
+	glVertex3f(DOOR_START, DOOR_HEIGHT + 50, 0.0f);
+	glEnd();
+}
+
 
 void drawLevel() {
 	drawBorders();
+	drawDoor();
 
 	glPushMatrix();
 	glColor3f(0.5882f, 0.0980f, 0.0549f);
@@ -262,7 +277,7 @@ void drawCircle(int x, int y, float r) {
 void drawBitmapText(string text, float x, float y, float z)
 {
 
-	glColor3f(0.0,0.0,0.0);
+	glColor3f(0.0, 0.0, 0.0);
 	glRasterPos3f(x, y, z);
 
 	for (int i = 0; i < text.size(); i++)
