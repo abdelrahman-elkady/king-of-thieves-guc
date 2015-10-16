@@ -4,6 +4,8 @@
 #include "stdafx.h"
 #include <iostream>
 #include <glut.h>
+#include <string>
+
 using namespace std;
 
 #define SPACEBAR 32
@@ -19,6 +21,9 @@ void render();
 void drawCircle(int, int, float);
 void timer(int);
 void keyboardHandler(unsigned char, int, int);
+void drawBitmapText(char, float, float, float);
+
+float time = 0;
 
 class Player {
 private:
@@ -166,7 +171,7 @@ void Player::update() {
 	if (this->yPosition <= 0) {
 		this->yPosition = 0;
 		this->setRelativeXSpeed(DEFAULT_X_SPEED);
-	} 
+	}
 
 
 	glutPostRedisplay();
@@ -251,6 +256,26 @@ void drawCircle(int x, int y, float r) {
 	glPopMatrix();
 }
 
+/*
+ * Rendring text to screen
+ */
+void drawBitmapText(string text, float x, float y, float z)
+{
+
+	glColor3f(0.0,0.0,0.0);
+	glRasterPos3f(x, y, z);
+
+	for (int i = 0; i < text.size(); i++)
+	{
+		glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, text[i]);
+	}
+}
+
+void drawTimer() {
+	string timeString = "Time : " + to_string(int(time)) + " s";
+	drawBitmapText(timeString, 760, 550, 0);
+}
+
 
 void main(int argc, char** argr) {
 	glutInit(&argc, argr);
@@ -272,7 +297,7 @@ void main(int argc, char** argr) {
 
 void timer(int t) {
 	p1.update();
-
+	time += FPS / 1000.0;
 	glutTimerFunc(FPS, timer, 0);
 }
 
@@ -307,6 +332,8 @@ void render() {
 
 	drawLevel();
 	p1.draw();
+
+	drawTimer();
 
 	glFlush();
 }
