@@ -61,8 +61,8 @@ public:
 	void setHeight(int height) { this->height = height; }
 	void setWidth(int width) { this->width = width; }
 
-	bool rightTouch() { return this->xPosition >= WINDOW_WIDTH - BORDER_WIDTH - this->width; }
-	bool leftTouch() { return this->xPosition <= BORDER_WIDTH; }
+	bool rightTouch() { return this->xPosition >= WINDOW_WIDTH - BORDER_WIDTH - this->width && this->xSpeed >= 0; }
+	bool leftTouch() { return this->xPosition <= BORDER_WIDTH && this->xSpeed <= 0; }
 
 	bool onFirstLevel();
 };
