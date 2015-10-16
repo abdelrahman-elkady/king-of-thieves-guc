@@ -25,6 +25,7 @@ void drawCircle(int, int, float);
 void timer(int);
 void keyboardHandler(unsigned char, int, int);
 void drawBitmapText(char, float, float, float);
+void resetPosition();
 
 float timeElapsed = 0;
 bool gameOver = false;
@@ -58,7 +59,7 @@ public:
 	int getHeight() { return this->height; }
 
 	void setHeight(int height) { this->height = height; }
-	void setWidth(int width) { this->width= width; }
+	void setWidth(int width) { this->width = width; }
 
 	bool rightTouch() { return this->xPosition >= WINDOW_WIDTH - BORDER_WIDTH - this->width; }
 	bool leftTouch() { return this->xPosition <= BORDER_WIDTH; }
@@ -195,6 +196,17 @@ void Player::update() {
 		gameOver = true;
 	}
 
+	// Checking for obstacles collisions
+	if (((this->xPosition + this->width >= OBSTACLE_1_X_START && this->xPosition + this->width <= OBSTACLE_1_X_START + OBSTACLE_WIDTH)
+		|| ((this->xPosition >= OBSTACLE_1_X_START && this->xPosition <= OBSTACLE_1_X_START + OBSTACLE_WIDTH)))
+		&& ((this->yPosition >= OBSTACLE_1_Y_START && this->yPosition <= OBSTACLE_1_Y_START + OBSTACLE_HEIGHT)) ||
+		((this->xPosition + this->width >= OBSTACLE_2_X_START && this->xPosition + this->width <= OBSTACLE_2_X_START + OBSTACLE_WIDTH)
+			|| ((this->xPosition >= OBSTACLE_2_X_START && this->xPosition <= OBSTACLE_2_X_START + OBSTACLE_WIDTH)))
+		&& ((this->yPosition >= OBSTACLE_2_Y_START && this->yPosition <= OBSTACLE_2_Y_START + OBSTACLE_HEIGHT))) {
+
+		resetPosition();
+	}
+
 
 	glutPostRedisplay();
 }
@@ -325,12 +337,14 @@ void drawTimer() {
 	drawBitmapText(timeString, 760, 550, 0);
 }
 
-void reset() {
+void resetPosition() {
 	p1.setXPosition(BORDER_WIDTH);
 	p1.setYPosition(0);
 	p1.setHeight(50);
 	p1.setWidth(50);
-	timeElapsed = 0;
+
+	p1.setXSpeed(DEFAULT_X_SPEED);
+	p1.setYSpeed(0);
 }
 
 
@@ -382,8 +396,9 @@ void keyboardHandler(unsigned char key, int x, int y) {
 
 	case R:
 		if (gameOver) {
-			reset();
+			resetPosition();
 			gameOver = false;
+			timeElapsed = 0;
 		}
 
 	default:
