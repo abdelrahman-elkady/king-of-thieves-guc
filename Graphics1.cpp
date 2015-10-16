@@ -90,20 +90,20 @@ Player::Player(int xPosition, int yPosition, int width, int height) {
 Player p1(BORDER_WIDTH, 0, 50, 50);
 
 // Constants that depends on player's properties 
-const int LEVEL_ONE_START = BORDER_WIDTH + 100 + p1.getWidth();
+const int LEVEL_ONE_START = BORDER_WIDTH + 190 + p1.getWidth();
 const int LEVEL_ONE_END = WINDOW_WIDTH - BORDER_WIDTH;
-const int LEVEL_ONE_HEIGHT = p1.getHeight() + 185;
+const int LEVEL_ONE_HEIGHT = p1.getHeight() + 175;
 const int LEVEL_ONE_THIKNESS = LEVEL_ONE_HEIGHT + 15;
 
 const int DOOR_START = BORDER_WIDTH;
 const int DOOR_END = DOOR_START + 20;
-const int DOOR_HEIGHT = LEVEL_ONE_THIKNESS + 180;
+const int DOOR_HEIGHT = LEVEL_ONE_THIKNESS + 160;
 
 const int OBSTACLE_WIDTH = 20;
 const int OBSTACLE_HEIGHT = 40;
 const int OBSTACLE_1_X_START = 500;
 const int OBSTACLE_1_Y_START = 0;
-const int OBSTACLE_2_X_START = 400;
+const int OBSTACLE_2_X_START = 450;
 const int OBSTACLE_2_Y_START = LEVEL_ONE_THIKNESS;
 
 void Player::draw() {
@@ -175,7 +175,6 @@ void Player::update() {
 	}
 	else { // if 3antar is on the first level
 		this->yPosition += this->ySpeed;
-
 
 		if (this->yPosition <= LEVEL_ONE_THIKNESS) {
 			this->yPosition = LEVEL_ONE_THIKNESS;
