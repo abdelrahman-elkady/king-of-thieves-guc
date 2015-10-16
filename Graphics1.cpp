@@ -9,6 +9,7 @@
 using namespace std;
 
 #define SPACEBAR 32
+#define R 114
 
 const int WINDOW_HEIGHT = 600;
 const int WINDOW_WIDTH = 900;
@@ -24,6 +25,7 @@ void keyboardHandler(unsigned char, int, int);
 void drawBitmapText(char, float, float, float);
 
 float time = 0;
+bool gameOver = false;
 
 class Player {
 private:
@@ -52,6 +54,9 @@ public:
 
 	int getWidth() { return this->width; }
 	int getHeight() { return this->height; }
+
+	void setHeight(int height) { this->height = height; }
+	void setWidth(int width) { this->width= width; }
 
 	bool rightTouch() { return this->xPosition >= WINDOW_WIDTH - BORDER_WIDTH - this->width; }
 	bool leftTouch() { return this->xPosition <= BORDER_WIDTH; }
@@ -87,7 +92,7 @@ const int LEVEL_ONE_END = WINDOW_WIDTH - BORDER_WIDTH;
 const int LEVEL_ONE_HEIGHT = p1.getHeight() + 185;
 const int LEVEL_ONE_THIKNESS = LEVEL_ONE_HEIGHT + 15;
 
-const int DOOR_START = BORDER_WIDTH + 20;
+const int DOOR_START = BORDER_WIDTH;
 const int DOOR_END = DOOR_START + 20;
 const int DOOR_HEIGHT = LEVEL_ONE_THIKNESS + 180;
 
@@ -177,6 +182,10 @@ void Player::update() {
 		this->setRelativeXSpeed(DEFAULT_X_SPEED);
 	}
 
+	if (this->xPosition <= DOOR_END && this->yPosition >= DOOR_HEIGHT - this->height && this->yPosition <= DOOR_HEIGHT + 50) {
+		gameOver = true;
+	}
+
 
 	glutPostRedisplay();
 }
@@ -198,8 +207,6 @@ void Player::setRelativeXSpeed(int x) {
 		this->xSpeed = -1 * x;
 	}
 }
-
-
 
 
 
@@ -291,6 +298,14 @@ void drawTimer() {
 	drawBitmapText(timeString, 760, 550, 0);
 }
 
+void reset() {
+	p1.setXPosition(BORDER_WIDTH);
+	p1.setYPosition(0);
+	p1.setHeight(50);
+	p1.setWidth(50);
+	time = 0;
+}
+
 
 void main(int argc, char** argr) {
 	glutInit(&argc, argr);
@@ -312,7 +327,9 @@ void main(int argc, char** argr) {
 
 void timer(int t) {
 	p1.update();
-	time += FPS / 1000.0;
+	if (!gameOver) {
+		time += FPS / 1000.0;
+	}
 	glutTimerFunc(FPS, timer, 0);
 }
 
@@ -336,6 +353,12 @@ void keyboardHandler(unsigned char key, int x, int y) {
 
 		break;
 
+	case R:
+		if (gameOver) {
+			reset();
+			gameOver = false;
+		}
+
 	default:
 		break;
 	}
@@ -344,11 +367,19 @@ void keyboardHandler(unsigned char key, int x, int y) {
 void render() {
 	glClearColor(1.0f, 1.0f, 1.0f, 0.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
+	if (!gameOver) {
+		drawLevel();
+		p1.draw();
 
-	drawLevel();
-	p1.draw();
+		drawTimer();
+	}
+	else {
+		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
-	drawTimer();
+		drawBitmapText("You are out!", 400, 300, 0);
+		drawBitmapText("You managed to escape in " + to_string(int(time)) + " seconds !", 305, 270, 0);
+		drawBitmapText("Press R to restart", 385, 230, 0);
+	}
 
 	glFlush();
 }
