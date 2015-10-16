@@ -281,7 +281,7 @@ void keyboardHandler(unsigned char key, int x, int y) {
 	{
 	case SPACEBAR:
 		// Jump
-		if (p1.getYPosition() <= 0 || p1.onFirstLevel()) {
+		if (p1.getYPosition() <= 0 || (p1.onFirstLevel() && p1.getYPosition() <= LEVEL_ONE_THIKNESS + 5)) { // dirty fix !
 			p1.setYSpeed(JUMP_HEIGHT);
 		}
 
