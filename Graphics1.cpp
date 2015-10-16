@@ -74,6 +74,14 @@ Player::Player(int xPosition, int yPosition, int width, int height) {
 	cout << "\n--------------------------\n";
 }
 
+Player p1(BORDER_WIDTH, 0, 50, 50);
+
+// Constants that depends on player's properties 
+const int LEVEL_ONE_START = BORDER_WIDTH + 100 + p1.getWidth();
+const int LEVEL_ONE_END = WINDOW_WIDTH - BORDER_WIDTH;
+const int LEVEL_ONE_HEIGHT = p1.getHeight() + 185;
+const int LEVEL_ONE_THIKNESS = LEVEL_ONE_HEIGHT + 15;
+
 void Player::draw() {
 	glPushMatrix();
 	glColor3f(0.0f, 0.0f, 0.0f);
@@ -128,17 +136,23 @@ void Player::draw() {
 }
 
 void Player::update() {
-
 	this->xPosition += this->xSpeed;
 
 	if (!this->onFirstLevel()) {
 		this->ySpeed += this->yAcceleration;
 		this->yPosition += this->ySpeed;
+
+		if (this->xPosition >= LEVEL_ONE_START - this->width && this->xPosition <= LEVEL_ONE_END + 10) { // if he is under the level
+			if (this->yPosition >= LEVEL_ONE_HEIGHT - this->height && this->yPosition <= LEVEL_ONE_THIKNESS - 10) {
+				this->ySpeed = 0;
+				this->yPosition = LEVEL_ONE_HEIGHT - this->height;
+			}
+		}
 	}
 	else { // if 3antar is on the first level
 		this->yPosition += this->ySpeed;
-		if (this->yPosition <= this->height + 195) {
-			this->yPosition = this->height + 195;
+		if (this->yPosition <= LEVEL_ONE_THIKNESS) {
+			this->yPosition = LEVEL_ONE_THIKNESS;
 		}
 		this->setRelativeXSpeed(DEFAULT_X_SPEED);
 	}
@@ -152,15 +166,15 @@ void Player::update() {
 	if (this->yPosition <= 0) {
 		this->yPosition = 0;
 		this->setRelativeXSpeed(DEFAULT_X_SPEED);
-	}
+	} 
+
 
 	glutPostRedisplay();
 }
 
 bool Player::onFirstLevel() {
-
-	if (this->xPosition >= BORDER_WIDTH + 100 + this->getWidth() - 10 && this->xPosition <= BORDER_WIDTH + 400 + this->getWidth() + 10) {
-		if (this->yPosition >= this->height + 195 && this->yPosition <= this->height + 205) {
+	if (this->xPosition >= LEVEL_ONE_START - this->width && this->xPosition <= LEVEL_ONE_END + 10) {
+		if (this->yPosition >= LEVEL_ONE_THIKNESS && this->yPosition <= LEVEL_ONE_THIKNESS + this->height) {
 			return true;
 		}
 	}
@@ -177,7 +191,7 @@ void Player::setRelativeXSpeed(int x) {
 }
 
 
-Player p1(BORDER_WIDTH, 0, 50, 50);
+
 
 
 /*
@@ -217,11 +231,12 @@ void drawLevel() {
 	glColor3f(0.5882f, 0.0980f, 0.0549f);
 
 	// TODO: Make it relative to the jump height
+	// First Level
 	glBegin(GL_QUADS);
-	glVertex3f(BORDER_WIDTH + 100 + p1.getWidth(), p1.getHeight() + 195, 0.0f);
-	glVertex3f(BORDER_WIDTH + 400 + p1.getWidth(), p1.getHeight() + 195, 0.0f);
-	glVertex3f(BORDER_WIDTH + 400 + p1.getWidth(), p1.getHeight() + 180, 0.0f);
-	glVertex3f(BORDER_WIDTH + 100 + p1.getWidth(), p1.getHeight() + 180, 0.0f);
+	glVertex3f(LEVEL_ONE_START, LEVEL_ONE_THIKNESS, 0.0f);
+	glVertex3f(LEVEL_ONE_END, LEVEL_ONE_THIKNESS, 0.0f);
+	glVertex3f(LEVEL_ONE_END, LEVEL_ONE_HEIGHT, 0.0f);
+	glVertex3f(LEVEL_ONE_START, LEVEL_ONE_HEIGHT, 0.0f);
 	glEnd();
 
 	glPopMatrix();
