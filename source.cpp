@@ -1,10 +1,10 @@
 // Graphics1.cpp : Defines the entry point for the console application.
 //
 
-#include "stdafx.h"
 #include <iostream>
-#include <glut.h>
+#include <GL/glut.h>
 #include <string>
+#include <sstream>
 
 using namespace std;
 
@@ -18,6 +18,17 @@ const int FPS = 33; // On internet they argue that this is 30 FPS :D
 const int JUMP_HEIGHT = 30;
 const int DEFAULT_X_SPEED = 7;
 
+// A good hackaround found here for to_string problems with GCC
+// http://stackoverflow.com/questions/12975341/to-string-is-not-a-member-of-std-says-so-g
+namespace patch
+{
+    template < typename T > std::string to_string( const T& n )
+    {
+        std::ostringstream stm ;
+        stm << n ;
+        return stm.str() ;
+    }
+}
 
 
 void render();
@@ -89,7 +100,7 @@ Player::Player(int xPosition, int yPosition, int width, int height) {
 
 Player p1(BORDER_WIDTH, 0, 50, 50);
 
-// Constants that depends on player's properties 
+// Constants that depends on player's properties
 const int LEVEL_ONE_START = BORDER_WIDTH + 190 + p1.getWidth();
 const int LEVEL_ONE_END = WINDOW_WIDTH - BORDER_WIDTH;
 const int LEVEL_ONE_HEIGHT = p1.getHeight() + 175;
@@ -335,7 +346,7 @@ void drawBitmapText(string text, float x, float y, float z)
 }
 
 void drawTimer() {
-	string timeString = "Time : " + to_string(int(timeElapsed)) + " s";
+	string timeString = "Time : " + patch::to_string(int(timeElapsed)) + " s";
 	drawBitmapText(timeString, 760, 550, 0);
 }
 
@@ -350,7 +361,7 @@ void resetPosition() {
 }
 
 
-void main(int argc, char** argr) {
+int main(int argc, char** argr) {
 	glutInit(&argc, argr);
 
 	glutInitWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT);
@@ -365,6 +376,8 @@ void main(int argc, char** argr) {
 	gluOrtho2D(0.0, WINDOW_WIDTH, 0.0, WINDOW_HEIGHT);
 
 	glutMainLoop();
+
+	return 0;
 
 }
 
@@ -421,7 +434,7 @@ void render() {
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
 		drawBitmapText("You are out!", 400, 300, 0);
-		drawBitmapText("You managed to escape in " + to_string(int(timeElapsed)) + " seconds !", 305, 270, 0);
+		drawBitmapText("You managed to escape in " + patch::to_string(int(timeElapsed)) + " seconds !", 305, 270, 0);
 		drawBitmapText("Press R to restart", 385, 230, 0);
 	}
 
