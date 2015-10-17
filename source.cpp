@@ -1,5 +1,7 @@
-// Graphics1.cpp : Defines the entry point for the console application.
-//
+/**
+ * source.cpp
+ * author : kady
+ */
 
 #include <iostream>
 #include <GL/glut.h>
