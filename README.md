@@ -6,6 +6,9 @@ The assignment is written using c++ with openGL and [glut](https://www.opengl.or
 
 You can find two different source files, one is ready to run on Visual Studio with GLUT API and the other is ready to be run with [freeglut](http://freeglut.sourceforge.net/index.php).
 
+![screenshot-01](https://cloud.githubusercontent.com/assets/10640699/10559629/aa56ed2e-74f5-11e5-99f8-19a737c14c81.png)
+![screenshot-02](https://cloud.githubusercontent.com/assets/10640699/10559630/aa609e14-74f5-11e5-9f00-8a7eea96cd97.png)
+
 ### Installation :
 
 #### Windows 
